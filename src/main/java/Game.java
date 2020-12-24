@@ -2,6 +2,9 @@ import java.util.Scanner;
 
 public class Game {
 
+    public static final String SPACE_TAKEN_MSG = "\nThe space is already " +
+            "taken.\n\nTry again : ";
+
     private static char[][] board = new char[3][3];
     private static final char player1 = 'X';
     private static final char player2 = 'O';
@@ -10,10 +13,8 @@ public class Game {
         initializeBoard();
         while (true) {
             printBoard();
-            askUserInput();
+            playerTurn();
         }
-
-
     }
 
     public static void initializeBoard() {
@@ -47,55 +48,40 @@ public class Game {
     }
 
     private static boolean spaceIsFree(int row, int column) {
-        return row == -1 && column == -1 || board[row][column] == ' ';
+        return board[row][column] == ' ';
     }
 
-    public static int getRow(String choice) {
-        return Character.getNumericValue(choice.charAt(0));
-    }
-
-    public static int getColumn(String choice) {
-        return Character.getNumericValue(choice.charAt(1));
-    }
-
-    public static void askUserInput() {
+    public static void playerTurn() {
         Scanner scanner = new Scanner(System.in);
-        String choice;
-        int row = -1;
-        int column = -1;
+        UserChoice choice;
+        int row;
+        int column;
+        boolean placed = false;
 
         System.out.print("Your turn : ");
 
-        do {
-            choice = scanner.nextLine();
+        while (!placed) {
+            try {
+                choice = new UserChoice(scanner.nextLine());
 
-            if (isValidChoice(choice)) {
+                if (choice != null) {
 
-                row = getRow(choice);
-                column = getColumn(choice);
+                    row = choice.getRow();
+                    column = choice.getColumn();
 
-                if (spaceIsFree(row, column)) {
-                    placePiece(player1, row, column);
-                } else {
-                    System.out.print("\nThe space is already taken.\n\n" +
-                            "Try again : ");
+                    if (spaceIsFree(row, column)) {
+                        placePiece(player1, row, column);
+                        placed = true;
+                    } else {
+                        System.out.print(SPACE_TAKEN_MSG);
+                    }
                 }
-            } else {
-                System.out.print("\nYou must enter 2 digits. The first " +
-                        "indicates the row and the second the column on which " +
-                        "you want to play.\n\nTry again : ");
+            } catch (ChoiceNotValidException e) {
+                System.out.println(e.getMessage());
             }
-        } while (!isValidChoice(choice) || !spaceIsFree(row, column));
+
+        }
     }
 
-    private static boolean isValidChoice(String choice) {
-        return choice.chars()
-                .mapToObj(c -> (char) c)
-                .allMatch(Game::isValidDigit)
-                || choice.length() == 2;
-    }
 
-    private static boolean isValidDigit(char c) {
-        return c >= '0' && c <= '2';
-    }
 }
