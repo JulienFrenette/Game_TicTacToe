@@ -27,16 +27,18 @@ public class UserChoice {
         return this.column;
     }
 
-    private static boolean isValidChoice(String choice) {
+    protected static boolean isValidChoice(String choice) {
         return choice.chars()
                 .mapToObj(c -> (char) c)
                 .allMatch(UserChoice::isValidDigit)
-                || choice.length() == 2;
+                && choice.length() == 2;
     }
 
-    private static boolean isValidDigit(char c) {
+    protected static boolean isValidDigit(char c) {
         return c >= '0' && c <= '2';
     }
 
-
+    public String toString() {
+        return "(" + this.row + ", " + this.column + ")";
+    }
 }

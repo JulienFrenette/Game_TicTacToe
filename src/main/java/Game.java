@@ -13,7 +13,7 @@ public class Game {
         initializeBoard();
         while (true) {
             printBoard();
-            playerTurn();
+            playTurn();
         }
     }
 
@@ -29,21 +29,22 @@ public class Game {
     }
 
     public static void printBoard() {
-        System.out.printf("\n==============\n" +
-                "| %c | %c | %c |\n" +
-                "--------------\n" +
-                "| %c | %c | %c |\n" +
-                "--------------\n" +
-                "| %c | %c | %c |\n" +
-                "==============\n"
+        System.out.printf("\n     [0] [1] [2]" +
+                "\n    ==============\n" +
+                "[0] | %c | %c | %c |\n" +
+                "    --------------\n" +
+                "[1] | %c | %c | %c |\n" +
+                "    --------------\n" +
+                "[2] | %c | %c | %c |\n" +
+                "    ==============\n\n"
                 ,board[0][0], board[0][1], board[0][2],
                 board[1][0], board[1][1], board[1][2],
                 board[2][0], board[2][1], board[2][2]);
     }
 
-    public static void placePiece(char player, int row, int column) {
+    public static void placePiece(char piece, int row, int column) {
         if (spaceIsFree(row, column)) {
-            board[row][column] = player;
+            board[row][column] = piece;
         }
     }
 
@@ -51,7 +52,7 @@ public class Game {
         return board[row][column] == ' ';
     }
 
-    public static void playerTurn() {
+    public static void playTurn() {
         Scanner scanner = new Scanner(System.in);
         UserChoice choice;
         int row;
@@ -77,7 +78,7 @@ public class Game {
                     }
                 }
             } catch (ChoiceNotValidException e) {
-                System.out.println(e.getMessage());
+                System.out.print(e.getMessage());
             }
 
         }
